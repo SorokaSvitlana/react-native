@@ -12,11 +12,15 @@ import {
   TouchableWithoutFeedback,
   Platform,
 } from "react-native";
+import { useNavigation } from "@react-navigation/native";
+
 const RegistrationScreen = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [keyboardOpen, setKeyboardOpen] = useState(false);
+
+  const navigation = useNavigation();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -25,20 +29,17 @@ const RegistrationScreen = () => {
         setKeyboardOpen(true);
       }
     );
-
     const keyboardDidHideListener = Keyboard.addListener(
       "keyboardDidHide",
       () => {
         setKeyboardOpen(false);
       }
     );
-
     return () => {
       keyboardDidShowListener.remove();
       keyboardDidHideListener.remove();
     };
   }, []);
-
   const handleRegistration = () => {
     console.log("Name:", name.trim());
     console.log("Email:", email.trim());
@@ -66,7 +67,6 @@ const RegistrationScreen = () => {
                 />
               </TouchableOpacity>
             </View>
-
             <Text style={styles.title}>Реєстрація</Text>
             <View style={styles.form}>
               <TextInput
@@ -101,15 +101,19 @@ const RegistrationScreen = () => {
               <>
                 <TouchableOpacity
                   style={styles.submitButton}
-                  onPress={handleRegistration}
+                  onPress={() => navigation.navigate("Home")}
                 >
                   <Text style={styles.submitButtonText}>Зареєструватися</Text>
                 </TouchableOpacity>
-                <TouchableOpacity
-                  onPress={() => console.log("Перехід до сторінки логіну")}
-                >
+                <TouchableOpacity>
                   <Text style={styles.loginText}>
-                    Вже є акаунт? <Text style={styles.loginLink}>Увійти</Text>
+                    Вже є акаунт?{" "}
+                    <Text
+                      style={styles.loginLink}
+                      onPress={() => navigation.navigate("Login")}
+                    >
+                      Увійти
+                    </Text>
                   </Text>
                 </TouchableOpacity>
               </>
@@ -129,7 +133,6 @@ const styles = StyleSheet.create({
     width: "100%",
     position: "absolute",
   },
-
   formContainer: {
     marginTop: "auto",
     paddingHorizontal: 16,
@@ -139,7 +142,6 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 25,
     backgroundColor: "#FFFFFF",
   },
-
   profileIcon: {
     position: "absolute",
     top: -60,
@@ -150,7 +152,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     backgroundColor: "#F6F6F6",
   },
-
   addPicture: {
     position: "absolute",
     bottom: -105,
@@ -163,13 +164,11 @@ const styles = StyleSheet.create({
     textAlign: "center",
     fontSize: 30,
   },
-
   form: {
     display: "flex",
     gap: 16,
     marginBottom: 43,
   },
-
   input: {
     width: "100%",
     fontSize: 16,
@@ -177,10 +176,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "#F6F6F6",
     borderColor: "#E8E8E8",
-
     padding: 16,
   },
-
   showHideText: {
     position: "absolute",
     bottom: 16,
@@ -188,30 +185,23 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -4 }],
     fontSize: 16,
     textDecorationLine: "underline",
-
     color: "#1B4371",
   },
-
   submitButton: {
     marginBottom: 16,
     paddingVertical: 16,
     borderRadius: 100,
-
     backgroundColor: "#FF6C00",
   },
-
   submitButtonText: {
     textAlign: "center",
     fontSize: 16,
-
     color: "#FFFFFF",
   },
-
   loginText: {
     textAlign: "center",
     color: "#1B4371",
   },
-
   loginLink: {
     textAlign: "center",
     textDecorationLine: "underline",
