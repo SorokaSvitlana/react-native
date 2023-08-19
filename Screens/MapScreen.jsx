@@ -1,0 +1,87 @@
+import React from "react";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  Dimensions,
+  StyleSheet,
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
+import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
+
+const Map = () => {
+  const navigation = useNavigation();
+
+  return (
+    <View style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Карта</Text>
+        <TouchableOpacity
+          style={styles.goBackBtn}
+          onPress={() => navigation.goBack()}
+        >
+          <Ionicons name="arrow-back" size={24} />
+        </TouchableOpacity>
+      </View>
+
+      <MapView
+        provider={PROVIDER_GOOGLE}
+        style={styles.mapStyle}
+        region={{
+          latitude: 37.78825,
+          longitude: -122.4324,
+          latitudeDelta: 0.0922,
+          longitudeDelta: 0.0421,
+        }}
+        mapType="standard"
+        onMapReady={() => console.log("Map")}
+        onRegionChange={() => console.log("Region")}
+      >
+        <Marker
+          title="I am here"
+          coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
+          description="Hello"
+        />
+      </MapView>
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  header: {
+    paddingTop: 55,
+    paddingBottom: 11,
+    backgroundColor: "#FFFFFF",
+    borderBottomWidth: 1,
+    borderBottomColor: "rgba(0, 0, 0, 0.3)",
+  },
+  goBackBtn: {
+    position: "absolute",
+    bottom: 10,
+    left: 20,
+  },
+  headerText: {
+    textAlign: "center",
+    fontFamily: "Roboto-Medium",
+    fontSize: 17,
+    lineHeight: 22,
+    letterSpacing: -0.408,
+    color: "#212121",
+  },
+  content: {
+    flex: 1,
+    paddingTop: 32,
+    paddingHorizontal: 16,
+    backgroundColor: "#FFFFFF",
+  },
+  mapStyle: {
+    width: Dimensions.get("window").width,
+    height: Dimensions.get("window").height,
+  },
+});
+
+export default Map;
