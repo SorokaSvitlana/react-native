@@ -1,7 +1,37 @@
-import React, { useState } from "react";
-import { View, TouchableOpacity, Text, Image, StyleSheet } from "react-native";
+import React, { useState, useEffect, useContext } from "react";
+import {
+  View,
+  TouchableOpacity,
+  Text,
+  Image,
+  StyleSheet,
+  ScrollView,
+} from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import AppContext from "../Components/AppContext";
+
 
 const PostsScreen = () => {
+  const [posts, setPosts] = useState([]);
+  const { params } = useContext(AppContext);
+
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    if (params) {
+      setPosts((state) => [...state, ...params]);
+    }
+  }, [params]);
+
+  const getImage = () => {
+    return params[0].photoUri;
+  };
+
+  const getLocation = () => {
+    return params[0].location;
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.header}>
@@ -11,10 +41,7 @@ const PostsScreen = () => {
             style={styles.logOutBtn}
             onPress={() => console.log("")}
           >
-            <Image
-              source={require("../images/log-out.png")}
-              style={styles.addPicture}
-            />
+            <Ionicons name="log-out-outline" size={24} />
           </TouchableOpacity>
         </View>
       </View>
@@ -31,41 +58,47 @@ const PostsScreen = () => {
               </View>
             </View>
           </View>
-        </View>
-      </View>
-      <View style={styles.navigation}>
-        <View>
-          <TouchableOpacity
-            style={styles.navButton}
-            onPress={() => console.log("")}
-          >
-            <Image
-              source={require("../images/grid.png")}
-              style={styles.addPicture}
-            />
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity
-            style={styles.mainButton}
-            onPress={() => console.log("")}
-          >
-            <Image
-              source={require("../images/plus.png")}
-              style={styles.addPicture}
-            />
-          </TouchableOpacity>
-        </View>
-        <View>
-          <TouchableOpacity
-            style={styles.navButton}
-            onPress={() => console.log("")}
-          >
-            <Image
-              source={require("../images/user.png")}
-              style={styles.addPicture}
-            />
-          </TouchableOpacity>
+          {posts.length > 0 && (
+            <ScrollView >
+              {posts.map((item, index) => (
+                <View style={styles.post} key={index}>
+                  <Image
+                    style={styles.postImage}
+                    source={{ uri: item.photoUri }}
+                  />
+                  <Text style={styles.postName}>{item.name}</Text>
+                  <View style={styles.postThumb}>
+                    <TouchableOpacity
+                      style={styles.postInfo}
+                      onPress={() =>
+                        navigation.navigate("Comments", getImage())
+                      }
+                    >
+                      <Ionicons
+                        name="chatbubbles-outline"
+                        size={24}
+                        color="#BDBDBD"
+                      />
+                      <Text>0</Text>
+                    </TouchableOpacity>
+
+                    <TouchableOpacity
+                      onPress={() => navigation.navigate("Map", getLocation())}
+                      style={styles.postInfo}
+                      disabled={getLocation() === null}
+                    >
+                      <Ionicons
+                        name="location-outline"
+                        size={24}
+                        color="#BDBDBD"
+                      />
+                      <Text style={styles.postAddress}>{item.address}</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ))}
+            </ScrollView>
+          )}
         </View>
       </View>
     </View>
@@ -75,6 +108,8 @@ const PostsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    paddingBottom: 200,
+    backgroundColor: "#FFFFFF",
   },
   header: {
     paddingTop: 55,
@@ -82,11 +117,13 @@ const styles = StyleSheet.create({
 
     borderBottomWidth: 1,
     borderBottomColor: "rgba(0, 0, 0, 0.3)",
+    backgroundColor: "#FFFFFF",
   },
+
   logOutBtn: {
     position: "absolute",
     bottom: 0,
-    right: 16,
+    right: 20,
   },
   headerText: {
     textAlign: "center",
@@ -99,6 +136,7 @@ const styles = StyleSheet.create({
   content: {
     flex: 1,
     backgroundColor: "#FFFFFF",
+    paddingHorizontal: 16,
   },
   thumb: {
     display: "flex",
@@ -109,7 +147,6 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     paddingVertical: 32,
-    paddingHorizontal: 16,
   },
   name: {
     fontFamily: "Roboto-Bold",
@@ -128,33 +165,42 @@ const styles = StyleSheet.create({
     backgroundColor: "#F6F6F6",
     borderRadius: 16,
   },
-  navigation: {
-    borderTopWidth: 1,
-    borderTopColor: "rgba(0, 0, 0, 0.3)",
-    flexDirection: "row",
-    display: "flex",
-    gap: 31,
-    justifyContent: "center",
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+  listContent: {
+    flexGrow: 1,
   },
-  navButton: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+  post: {
+    marginBottom: 34,
   },
-  mainButton: {
-    width: 70,
-    height: 40,
-    borderRadius: 20,
-    paddingVertical: 13.5,
-    backgroundColor: "#FF6C00",
-    justifyContent: "center",
-    alignItems: "center",
+  postImage: {
+    width: "100%",
+    height: 240,
+
+    borderWidth: 1,
+    borderRadius: 8,
   },
-  navButtonText: {
+  postName: {
+    fontFamily: "Roboto-Medium",
     fontSize: 16,
-    fontWeight: "bold",
+    lineHeight: 19,
+    marginTop: 8,
+  },
+  postThumb: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "baseline",
+    justifyContent: "space-between",
+    marginTop: 11,
+  },
+  postInfo: {
+    display: "flex",
+    flexDirection: "row",
+    gap: 9,
+    alignItems: "center",
+  },
+  postAddress: {
+    fontSize: 16,
+    lineHeight: 19,
+    textDecorationLine: "underline",
   },
 });
 

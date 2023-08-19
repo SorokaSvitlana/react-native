@@ -6,7 +6,6 @@ import {
   Text,
   Image,
   StyleSheet,
-  ImageBackground,
   Keyboard,
   KeyboardAvoidingView,
   TouchableWithoutFeedback,

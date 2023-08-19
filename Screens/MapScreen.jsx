@@ -7,11 +7,13 @@ import {
   StyleSheet,
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import MapView, { PROVIDER_GOOGLE, Marker } from "react-native-maps";
 
-const Map = () => {
+const MapScreen = () => {
   const navigation = useNavigation();
+  const { params } = useRoute();
+ 
 
   return (
     <View style={styles.container}>
@@ -24,30 +26,30 @@ const Map = () => {
           <Ionicons name="arrow-back" size={24} />
         </TouchableOpacity>
       </View>
-
       <MapView
         provider={PROVIDER_GOOGLE}
         style={styles.mapStyle}
+        mapType="standard"
+        minZoomLevel={13}
         region={{
-          latitude: 37.78825,
-          longitude: -122.4324,
+          ...params,
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}
-        mapType="standard"
-        onMapReady={() => console.log("Map")}
-        onRegionChange={() => console.log("Region")}
       >
         <Marker
           title="I am here"
-          coordinate={{ latitude: 37.78825, longitude: -122.4324 }}
+          coordinate={{
+            latitude: params.latitude,
+            longitude: params.longitude,
+          }}
           description="Hello"
         />
       </MapView>
+  
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -84,4 +86,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Map;
+export default MapScreen;
