@@ -15,9 +15,9 @@ import { useNavigation } from "@react-navigation/native";
 import { Camera } from "expo-camera";
 import * as MediaLibrary from "expo-media-library";
 import * as ImagePicker from "expo-image-picker";
-import IconCamera from "../Components/IconCamera";
-import AppContext from "../Components/AppContext";
-import ComponentCamera from "../Components/Camera";
+import IconCamera from "./Components/IconCamera";
+import AppContext from "./Components/AppContext";
+import ComponentCamera from "./Components/Camera";
 
 const CreatePostsScreen = () => {
   const [location, setLocation] = useState(null);

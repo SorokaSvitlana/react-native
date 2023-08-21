@@ -9,12 +9,15 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation, useRoute } from "@react-navigation/native";
-import AppContext from "../Components/AppContext";
+import AppContext from "./Components/AppContext";
 
+import { useDispatch } from "react-redux";
 
 const PostsScreen = () => {
   const [posts, setPosts] = useState([]);
   const { params } = useContext(AppContext);
+  const dispatch = useDispatch();
+
 
   const navigation = useNavigation();
 
@@ -79,7 +82,7 @@ const PostsScreen = () => {
                         size={24}
                         color="#BDBDBD"
                       />
-                      <Text>0</Text>
+                      <Text>{item.comments.length}</Text>
                     </TouchableOpacity>
 
                     <TouchableOpacity

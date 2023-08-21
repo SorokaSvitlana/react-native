@@ -9,7 +9,10 @@ import LoginScreen from "./Screens/LoginScreen";
 import RegistrationScreen from "./Screens/RegistrationScreen";
 import CommentsScreen from "./Screens/CommentsScreen";
 import MapScreen from "./Screens/MapScreen";
-import AppContext from "./Components/AppContext";
+import AppContext from "./Screens/Components/AppContext";
+import { Provider } from "react-redux";
+import { PersistGate } from "redux-persist/integration/react";
+import { persistor, store } from "./redux/store";
 
 const MainStack = createStackNavigator();
 
@@ -26,25 +29,29 @@ export default function App() {
   }
 
   return (
-    <AppContext.Provider value={{ params, setParams }}>
-      <NavigationContainer>
-        <StatusBar style="auto" />
-        <MainStack.Navigator
-          initialRouteName="Login"
-          screenOptions={{
-            headerShown: false,
-          }}
-        >
-          <MainStack.Screen
-            name="Registration"
-            component={RegistrationScreen}
-          />
-          <MainStack.Screen name="Login" component={LoginScreen} />
-          <MainStack.Screen name="Home" component={Home} />
-          <MainStack.Screen name="Comments" component={CommentsScreen} />
-          <MainStack.Screen name="Map" component={MapScreen} />
-        </MainStack.Navigator>
-      </NavigationContainer>
-    </AppContext.Provider>
+    <Provider store={store}>
+      <PersistGate loading={null} persistor={persistor}>
+        <AppContext.Provider value={{ params, setParams }}>
+          <NavigationContainer>
+            <StatusBar style="auto" />
+            <MainStack.Navigator
+              initialRouteName="Login"
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <MainStack.Screen
+                name="Registration"
+                component={RegistrationScreen}
+              />
+              <MainStack.Screen name="Login" component={LoginScreen} />
+              <MainStack.Screen name="Home" component={Home} />
+              <MainStack.Screen name="Comments" component={CommentsScreen} />
+              <MainStack.Screen name="Map" component={MapScreen} />
+            </MainStack.Navigator>
+          </NavigationContainer>
+        </AppContext.Provider>
+      </PersistGate>
+    </Provider>
   );
 }

@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
-import AppContext from "../Components/AppContext";
+import AppContext from "./Components/AppContext";
 
 
 const ProfileScreen = () => {

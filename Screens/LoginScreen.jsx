@@ -12,6 +12,8 @@ import {
   Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { loginUser } from "../redux/auth/authOperations";
 
 const LoginScreen = () => {
   const [email, setEmail] = useState("");
@@ -19,6 +21,8 @@ const LoginScreen = () => {
   const [keyboardOpen, setKeyboardOpen] = useState(false);
 
   const navigation = useNavigation();
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const keyboardDidShowListener = Keyboard.addListener(
@@ -38,10 +42,15 @@ const LoginScreen = () => {
       keyboardDidHideListener.remove();
     };
   }, []);
-  const handleRegistration = () => {
-    console.log("Email:", email.trim());
-    console.log("Password:", password.trim());
+  
+  const handleLogin = async () => {
+    try {
+      const credentials = await dispatch(loginUser({ email, password })); 
+    } catch (error) {
+      console.error("Помилка під час входу:", error);
+    }
   };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>

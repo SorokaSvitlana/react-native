@@ -12,8 +12,22 @@ import {
   Platform,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch} from "react-redux";
+
+
 
 const RegistrationScreen = () => {
+
+  const dispatch = useDispatch();
+
+  const initialState = {
+    nickname: "",
+    email: "",
+    password: "",
+    avatar: null,
+  };
+  
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -39,11 +53,32 @@ const RegistrationScreen = () => {
       keyboardDidHideListener.remove();
     };
   }, []);
-  const handleRegistration = () => {
-    console.log("Name:", name.trim());
-    console.log("Email:", email.trim());
-    console.log("Password:", password.trim());
+
+  const handleImagePicker = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+  
+    if (!result.cancelled) {
+      const response = await fetch(result.uri);
+      const blob = await response.blob();
+  
+      dispatch(uploadAvatarToStorage(blob)); 
+    }
   };
+
+  const handleRegistration = async () => {
+    try {
+      dispatch(registerUser(state)); 
+      setState(initialState);
+    } catch (error) {
+      console.error("Error during registration:", error);
+    }
+  };
+
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container}>
