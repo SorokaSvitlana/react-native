@@ -18,6 +18,8 @@ import * as ImagePicker from "expo-image-picker";
 import IconCamera from "./Components/IconCamera";
 import AppContext from "./Components/AppContext";
 import ComponentCamera from "./Components/Camera";
+import { useDispatch } from "react-redux";
+import { setPosts } from "../redux/post/postReducer";
 
 const CreatePostsScreen = () => {
   const [location, setLocation] = useState(null);
@@ -28,6 +30,8 @@ const CreatePostsScreen = () => {
   const navigation = useNavigation();
   const { setParams } = useContext(AppContext);
 
+  const dispatch = useDispatch();
+
   const handleSubmit = () => {
     const post = {
       photoUri,
@@ -36,7 +40,7 @@ const CreatePostsScreen = () => {
       location,
     };
 
-    setParams([post]);
+    dispatch(setPosts([post]));
     navigation.navigate("Menu");
     setPhotoUri(null);
     setAddress("");

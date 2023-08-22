@@ -10,7 +10,9 @@ import {
 import Ionicons from "react-native-vector-icons/Ionicons";
 import { useNavigation } from "@react-navigation/native";
 import AppContext from "./Components/AppContext";
-
+import { collection, query, where, onSnapshot } from "firebase/firestore";
+import { db } from "../config";
+import { useSelector } from "react-redux";
 
 const ProfileScreen = () => {
   const [posts, setPosts] = useState([]);
@@ -18,10 +20,27 @@ const ProfileScreen = () => {
 
   const navigation = useNavigation();
 
+  const user = useSelector((state) => state.auth.user);
+
   useEffect(() => {
     if (params) {
       setPosts((state) => [...state, ...params]);
     }
+
+    const postsCollection = collection(db, "posts"); 
+    const q = query(postsCollection, where("userId", "==", user.id)); 
+    const unsubscribe = onSnapshot(q, (querySnapshot) => {
+      const updatedPosts = [];
+      querySnapshot.forEach((doc) => {
+        const data = doc.data();
+        updatedPosts.push(data);
+      });
+      setPosts(updatedPosts);
+    });
+
+    return () => {
+      unsubscribe();
+    };
   }, [params]);
 
   const getImage = () => {
